@@ -12,6 +12,8 @@ Action tools must return structured feedback that lets an agent decide whether t
 
 After locating a window, the tool should be able to capture an agent-readable screenshot without returning an oversized desktop image.
 
+Screenshot coordinates and click coordinates must follow the DPI policy in `docs/dpi-coordinate-model.md`.
+
 The capture response must include:
 
 - scaled image artifact path
@@ -20,6 +22,7 @@ The capture response must include:
 - scale factor
 - crop origin
 - coordinate transform from scaled image point to desktop point
+- DPI awareness and DPI value for the target window when available
 - optional full-resolution artifact path when explicitly requested
 
 Default capture policy:
@@ -45,6 +48,11 @@ Example response shape:
     "height": 800,
     "scale": 0.8,
     "cropOrigin": { "x": 100, "y": 80 }
+  },
+  "dpi": {
+    "windowDpi": 144,
+    "scaleFrom96": 1.5,
+    "awareness": "per_monitor_v2"
   },
   "coordinateTransform": {
     "scaledToDesktop": "desktopX = cropOrigin.x + scaledX / scale; desktopY = cropOrigin.y + scaledY / scale"

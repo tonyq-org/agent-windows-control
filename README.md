@@ -10,6 +10,7 @@ This project is intended to expose reliable local automation actions to coding a
 - Return structured feedback for every action, not just success/failure.
 - Separate action intent from delivery mechanism. For example, a click can be semantic invoke, background window message, or physical mouse input.
 - Return scaled screenshots that agents can understand and click against without shipping huge high-resolution images.
+- Normalize DPI handling by keeping physical desktop pixels, UI logical coordinates, and agent-scaled image coordinates explicit.
 - Use LibreAutomate for Windows UI automation, mouse/keyboard input, windows, images, and related desktop APIs.
 - Keep the core automation code independent from the transport layer, so CLI and MCP can share the same behavior.
 
@@ -48,6 +49,18 @@ LibreAutomate is licensed under the MIT License. MIT is compatible with this pro
 When distributing this project with LibreAutomate binaries, source, or substantial portions, keep the LibreAutomate copyright notice and MIT license text. If LibreAutomate source is vendored or modified, include the upstream MIT license notice with the vendored copy.
 
 See `THIRD_PARTY_NOTICES.md` for the dependency notice.
+
+## Coordinate model
+
+Windows automation must not mix coordinate spaces. The project contract uses three explicit spaces:
+
+- `desktopPhysical`: real desktop pixels used for screenshots, physical mouse input, and UI Automation bounding rectangles.
+- `windowLogical`: target-window logical coordinates when interacting with APIs or message delivery that depend on the target HWND's DPI awareness.
+- `agentImage`: scaled screenshot pixels shown to the agent.
+
+Every screenshot response must include the transform from `agentImage` back to `desktopPhysical`. Every message-based action must document whether it expects `desktopPhysical`, `windowLogical`, or client coordinates.
+
+See `docs/dpi-coordinate-model.md` for the full policy.
 
 ## Early CLI shape
 
