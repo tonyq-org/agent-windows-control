@@ -14,7 +14,7 @@ public static class ToolCatalog
             Name: "find_window",
             Purpose: "Locate a desktop window and return its handle, bounds, process, and observation handles.",
             PlannedModes: ["title", "process", "class_name", "focused"],
-            Feedback: ["window handle", "bounds", "DPI scale", "visibility", "foreground state"]),
+            Feedback: ["window handle", "bounds", "DPI scale", "visibility", "foreground state", "integrity/elevation hints"]),
 
         new(
             Name: "capture_window",
@@ -32,7 +32,7 @@ public static class ToolCatalog
             Name: "click",
             Purpose: "Activate a target UI element with explicit delivery strategy reporting.",
             PlannedModes: ["semantic", "background_message", "physical", "auto"],
-            Feedback: ["selected strategy", "hit-test result", "post-action UI change", "verification result"]),
+            Feedback: ["selected strategy", "elevation decision", "hit-test result", "post-action UI change", "verification result"]),
 
         new(
             Name: "drag_and_drop",

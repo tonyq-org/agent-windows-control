@@ -8,6 +8,8 @@ observe -> act -> verify -> report evidence
 
 Action tools must return structured feedback that lets an agent decide whether the action actually worked.
 
+Action tools must also report elevation decisions. See `docs/elevation-policy.md`.
+
 ## Window screenshots
 
 After locating a window, the tool should be able to capture an agent-readable screenshot without returning an oversized desktop image.
@@ -156,6 +158,7 @@ Action results should include:
 
 - target lookup result
 - target bounds and enabled/visible state
+- elevation decision and reason
 - selected delivery strategy
 - hit-test result when physical or message input is used
 - input trace summary

@@ -12,6 +12,7 @@ This project is intended to expose reliable local automation actions to coding a
 - Return scaled screenshots that agents can understand and click against without shipping huge high-resolution images.
 - Support click previews that draw the actual computed click point before execution.
 - Normalize DPI handling by keeping physical desktop pixels, UI logical coordinates, and agent-scaled image coordinates explicit.
+- Prefer `gsudo` for elevation when it is available and elevation is required, while reporting the elevation decision in action results.
 - Use LibreAutomate for Windows UI automation, mouse/keyboard input, windows, images, and related desktop APIs.
 - Keep the core automation code independent from the transport layer, so CLI and MCP can share the same behavior.
 
@@ -62,6 +63,14 @@ Windows automation must not mix coordinate spaces. The project contract uses thr
 Every screenshot response must include the transform from `agentImage` back to `desktopPhysical`. Every message-based action must document whether it expects `desktopPhysical`, `windowLogical`, or client coordinates.
 
 See `docs/dpi-coordinate-model.md` for the full policy.
+
+## Elevation policy
+
+Some Windows automation targets cannot be controlled from a lower-integrity process. When elevation is required and `gsudo` is available, the project should prefer launching the elevated helper through `gsudo` to reduce repeated UAC prompts.
+
+Elevation must be explicit in tool results: report whether elevation was used, why it was needed, which helper/process was elevated, and whether the target still failed due to integrity or desktop isolation.
+
+See `docs/elevation-policy.md` for the full policy.
 
 ## Window-relative actions
 
