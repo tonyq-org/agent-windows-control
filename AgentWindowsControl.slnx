@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/AgentWindowsControl.Cli/AgentWindowsControl.Cli.csproj" />
+    <Project Path="src/AgentWindowsControl.Core/AgentWindowsControl.Core.csproj" />
+  </Folder>
+</Solution>
