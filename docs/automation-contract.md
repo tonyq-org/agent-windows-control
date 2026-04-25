@@ -71,6 +71,85 @@ Do not treat "left click" as one implementation. A click request has a delivery 
 
 High-risk actions should avoid silent `auto` behavior and should include explicit verification.
 
+## Window-relative click
+
+Click requests may be expressed relative to a target window. The API must name the coordinate space explicitly.
+
+Example:
+
+```json
+{
+  "tool": "click",
+  "arguments": {
+    "window": {
+      "title": "Untitled - Notepad"
+    },
+    "point": {
+      "space": "clientFraction",
+      "x": 0.5,
+      "y": 0.2
+    },
+    "mode": "physical"
+  }
+}
+```
+
+Execution rule:
+
+```text
+input point -> fresh WindowGeometry -> action-native coordinate space -> execute
+```
+
+Do not repeatedly convert through multiple spaces. For physical input, normalize to `desktopPhysical`. For message delivery, normalize to the target HWND client coordinate space expected by the message.
+
+## Click preview
+
+`preview_click` plans a click without executing it. It should return both structured coordinates and a scaled screenshot with overlays.
+
+Example request:
+
+```json
+{
+  "tool": "preview_click",
+  "arguments": {
+    "window": {
+      "title": "Untitled - Notepad"
+    },
+    "point": {
+      "space": "clientPhysical",
+      "x": 120,
+      "y": 40
+    },
+    "mode": "physical"
+  }
+}
+```
+
+Example response:
+
+```json
+{
+  "ok": true,
+  "willClick": {
+    "desktopPhysical": { "x": 228, "y": 161 },
+    "clientPhysical": { "x": 120, "y": 40 },
+    "agentImage": { "x": 102, "y": 65 }
+  },
+  "preview": {
+    "path": "artifacts/previews/click-001.png",
+    "scaleFromDesktopPhysical": 0.8,
+    "overlays": ["frame_bounds", "client_bounds", "target_bounds", "click_crosshair"]
+  },
+  "geometryVersion": {
+    "hwnd": "0x0012049A",
+    "bounds": "100,80,1600,1000",
+    "dpi": 144
+  }
+}
+```
+
+The subsequent `click` must revalidate the window handle, bounds, DPI, and hit-test before sending input. A preview image is evidence for the agent, not permission to reuse stale physical coordinates.
+
 ## Required feedback
 
 Action results should include:

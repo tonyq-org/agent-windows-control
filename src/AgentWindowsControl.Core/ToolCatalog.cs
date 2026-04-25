@@ -23,6 +23,12 @@ public static class ToolCatalog
             Feedback: ["scaled image path", "original bounds", "scale factor", "coordinate transform", "optional full-resolution artifact path"]),
 
         new(
+            Name: "preview_click",
+            Purpose: "Plan a click without executing it and return an overlay image showing the exact computed click point.",
+            PlannedModes: ["desktopPhysical", "clientPhysical", "clientFraction", "agentImage"],
+            Feedback: ["preview image path", "computed coordinates", "window geometry version", "hit-test result"]),
+
+        new(
             Name: "click",
             Purpose: "Activate a target UI element with explicit delivery strategy reporting.",
             PlannedModes: ["semantic", "background_message", "physical", "auto"],

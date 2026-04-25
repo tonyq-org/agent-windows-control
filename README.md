@@ -10,6 +10,7 @@ This project is intended to expose reliable local automation actions to coding a
 - Return structured feedback for every action, not just success/failure.
 - Separate action intent from delivery mechanism. For example, a click can be semantic invoke, background window message, or physical mouse input.
 - Return scaled screenshots that agents can understand and click against without shipping huge high-resolution images.
+- Support click previews that draw the actual computed click point before execution.
 - Normalize DPI handling by keeping physical desktop pixels, UI logical coordinates, and agent-scaled image coordinates explicit.
 - Use LibreAutomate for Windows UI automation, mouse/keyboard input, windows, images, and related desktop APIs.
 - Keep the core automation code independent from the transport layer, so CLI and MCP can share the same behavior.
@@ -61,6 +62,18 @@ Windows automation must not mix coordinate spaces. The project contract uses thr
 Every screenshot response must include the transform from `agentImage` back to `desktopPhysical`. Every message-based action must document whether it expects `desktopPhysical`, `windowLogical`, or client coordinates.
 
 See `docs/dpi-coordinate-model.md` for the full policy.
+
+## Window-relative actions
+
+Click requests may use window-relative coordinates, such as `clientPhysical` or `clientFraction`, but execution must normalize them once through a fresh window geometry snapshot.
+
+Previewable click flow:
+
+```text
+find_window -> capture_window -> preview_click -> click with revalidation
+```
+
+`preview_click` must draw the final computed click point and target bounds on the scaled window screenshot so an agent can inspect the planned operation before executing it.
 
 ## Early CLI shape
 

@@ -77,6 +77,34 @@ desktopY = 80 + 400 / 0.8 = 580
 
 The physical click point is therefore `(900, 580)` in virtual desktop coordinates.
 
+## Window-relative input
+
+Actions may accept window-relative coordinates, but the coordinate space must be explicit.
+
+Supported point spaces:
+
+| Space | Example | Conversion target |
+| --- | --- | --- |
+| `desktopPhysical` | `{ "x": 900, "y": 580 }` | already physical desktop pixels |
+| `clientPhysical` | `{ "x": 120, "y": 40 }` | add `clientBoundsDesktopPhysical` origin |
+| `clientFraction` | `{ "x": 0.5, "y": 0.2 }` | multiply by client physical width/height, then add origin |
+| `agentImage` | `{ "x": 640, "y": 400 }` | apply screenshot transform to `desktopPhysical` |
+| `windowLogical` | `{ "x": 80, "y": 27 }` | convert through target HWND DPI/client coordinate rules |
+
+Examples:
+
+```text
+clientPhysical -> desktopPhysical:
+desktopX = clientBoundsDesktopPhysical.x + clientX
+desktopY = clientBoundsDesktopPhysical.y + clientY
+
+clientFraction -> desktopPhysical:
+desktopX = clientBoundsDesktopPhysical.x + clientBoundsDesktopPhysical.width * fractionX
+desktopY = clientBoundsDesktopPhysical.y + clientBoundsDesktopPhysical.height * fractionY
+```
+
+Use a single fresh `WindowGeometry` snapshot per action. Do not convert coordinates repeatedly across spaces, because rounding and DPI virtualization can accumulate errors.
+
 ## Widget bounds
 
 For every UI target, return bounds in all spaces that are relevant to the selected action strategy.
